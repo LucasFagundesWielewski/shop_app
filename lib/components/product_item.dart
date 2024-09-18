@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
+import 'package:shop_app/utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -10,6 +11,18 @@ class ProductItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
+        child: GestureDetector(
+          child: Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover,
+          ),
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              AppRoutes.PRODUCT_DETAIL,
+              arguments: product,
+            );
+          },
+        ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           title: Text(product.title, textAlign: TextAlign.center),
@@ -24,7 +37,6 @@ class ProductItem extends StatelessWidget {
             color: Theme.of(context).hintColor,
           ),
         ),
-        child: Image.network(product.imageUrl, fit: BoxFit.cover),
       ),
     );
   }
