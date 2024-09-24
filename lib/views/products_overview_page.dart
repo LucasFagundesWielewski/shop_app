@@ -10,7 +10,7 @@ class ProductsOverviewPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Minha loja'),
       ),
-      body: const ProductGrid(),
+      body: ProductGrid(),
     );
   }
 }
