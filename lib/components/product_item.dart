@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/utils/app_routes.dart';
+import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
+
   const ProductItem({Key? key, required this.product}) : super(key: key);
 
   @override
@@ -26,10 +28,16 @@ class ProductItem extends StatelessWidget {
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           title: Text(product.title, textAlign: TextAlign.center),
-          leading: IconButton(
-            icon: const Icon(Icons.favorite),
-            onPressed: () {},
-            color: Theme.of(context).hintColor,
+          leading: Consumer<Product>(
+            builder: (ctx, product, _) => IconButton(
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
+              onPressed: () {
+                product.toggleFavorite();
+              },
+              color: Theme.of(context).hintColor,
+            ),
           ),
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
