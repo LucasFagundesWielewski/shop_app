@@ -4,11 +4,18 @@ import 'package:shop_app/models/product_list.dart';
 import 'package:shop_app/components/product_item.dart';
 import 'package:shop_app/models/product.dart';
 
+// ignore: must_be_immutable
 class ProductGrid extends StatelessWidget {
+  bool _showFavoriteOnly = false;
+
+  ProductGrid(this._showFavoriteOnly, {super.key});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);
-    final List<Product> loadedProducts = provider.items;
+    final List<Product> loadedProducts =
+        _showFavoriteOnly ? provider.favoriteItems : provider.items;
+
     return GridView.builder(
       padding: const EdgeInsets.all(10),
       itemCount: loadedProducts.length,
