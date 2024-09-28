@@ -15,7 +15,7 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          title: Text(product.title, textAlign: TextAlign.center),
+          title: Text(product.name, textAlign: TextAlign.center),
           leading: Consumer<Product>(
             builder: (ctx, product, _) => IconButton(
               icon: Icon(
