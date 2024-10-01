@@ -8,30 +8,10 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context, listen: false);
-    final Product cart = Provider.of<Cart>(context, listen: false) as Product;
+    final Cart cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          title: Text(product.name, textAlign: TextAlign.center),
-          leading: Consumer<Product>(
-            builder: (ctx, product, _) => IconButton(
-              icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border,
-              ),
-              onPressed: () {
-                product.toggleFavorite();
-              },
-              color: Theme.of(context).hintColor,
-            ),
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {},
-            color: Theme.of(context).hintColor,
-          ),
-        ),
         child: GestureDetector(
           child: Image.network(
             product.imageUrl,
@@ -43,6 +23,46 @@ class ProductItem extends StatelessWidget {
               arguments: product,
             );
           },
+        ),
+        footer: GridTileBar(
+          backgroundColor: Colors.black87,
+          leading: Consumer<Product>(
+            builder: (ctx, product, _) => IconButton(
+              onPressed: () {
+                product.toggleFavorite();
+              },
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
+          title: Text(
+            product.name,
+            textAlign: TextAlign.center,
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              cart.addItem(product.id, product.price, product.name);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Produto adicionado com sucesso!'),
+                  duration: Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: 'DESFAZER',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    },
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Theme.of(context).hintColor,
+            ),
+          ),
         ),
       ),
     );
