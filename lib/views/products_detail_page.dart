@@ -12,12 +12,33 @@ class ProductDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(product.name),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(product.imageUrl),
-            Text(product.description),
-            Text(product.price.toString()),
+            Image.network(
+              product.imageUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 300,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'R\$${product.price}',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                product.description,
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ),
           ],
         ),
       ),
