@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/utils/app_routes.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.shop),
             title: const Text('Loja'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
             },
           ),
           const Divider(),
@@ -25,7 +26,15 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.shop),
             title: const Text('Pedidos'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/orders');
+              Navigator.of(context).pushReplacementNamed(AppRoutes.ORDERS);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Gerenciar Produtos'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(AppRoutes.PRODUCTS);
             },
           ),
         ],
