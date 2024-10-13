@@ -14,6 +14,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
       appBar: AppBar(
         title: Text('Product Form'),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          child: ListView(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Title'),
+                textInputAction: TextInputAction.next,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
