@@ -14,6 +14,19 @@ class ProductList with ChangeNotifier {
   int get itemsCount {
     return _items.length;
   }
+
+  void addProductFromData(Map<String, Object> formData) {
+    final newProduct = Product(
+      id: DateTime.now().toString(),
+      name: formData['name'] as String,
+      price: formData['price'] as double,
+      description: formData['description'] as String,
+      imageUrl: formData['imageUrl'] as String,
+    );
+
+    addProduct(newProduct);
+  }
+
   // List<Product> get items {
   //   if (_showFavoriteOnly) {
   //     return _items.where((prod) => prod.isFavorite).toList();
