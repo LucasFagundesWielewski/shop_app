@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/data/dummy_data.dart';
+import 'package:http/http.dart' as http;
 
 class ProductList with ChangeNotifier {
+  final _baseUrl = 'https://shop-code-e6c83-default-rtdb.firebaseio.com';
   final List<Product> _items = dummyProducts;
   // bool _showFavoriteOnly = false;
 
@@ -38,6 +40,17 @@ class ProductList with ChangeNotifier {
   }
 
   void addProduct(Product product) {
+    http.post(
+      Uri.parse('$_baseUrl/products.json'),
+      body: json.encode({
+        'name': product.name,
+        'price': product.price,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'isFavorite': product.isFavorite,
+      }),
+    );
+
     _items.add(product);
     notifyListeners();
   }
