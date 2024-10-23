@@ -19,7 +19,7 @@ class ProductList with ChangeNotifier {
     return _items.length;
   }
 
-  void saveProduct(Map<String, Object> data) {
+  Future<void> saveProduct(Map<String, Object> data) async {
     bool hasId = data['id'] != null;
 
     final product = Product(
@@ -31,15 +31,13 @@ class ProductList with ChangeNotifier {
     );
 
     if (hasId) {
-      final productIndex =
-          _items.indexWhere((prod) => prod.id == data['id'] as String);
-      _items[productIndex] = product;
+      return updateProduct(product);
     } else {
-      addProduct(product);
+      return addProduct(product);
     }
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     final future = http.post(
       Uri.parse('$_baseUrl/products.json'),
       body: json.encode(
@@ -52,7 +50,7 @@ class ProductList with ChangeNotifier {
         },
       ),
     );
-    future.then((response) {
+    future.then<void>((response) {
       final id = json.decode(response.body)['name'];
       _items.add(Product(
           id: id,
@@ -65,12 +63,13 @@ class ProductList with ChangeNotifier {
     });
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) {
     int index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
       _items[index] = product;
       notifyListeners();
     }
+    return Future.value();
   }
 
   void deleteProduct(String id) {
