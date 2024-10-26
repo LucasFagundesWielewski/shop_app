@@ -19,6 +19,25 @@ class ProductList with ChangeNotifier {
     return _items.length;
   }
 
+  Future<void> loadProducts() async {
+    final response = await http.get(Uri.parse('$_baseUrl/products.json'));
+    Map<String, dynamic> data = json.decode(response.body);
+
+    _items.clear();
+    data.forEach((productId, productData) {
+      _items.add(Product(
+        id: productId,
+        name: productData['name'],
+        price: productData['price'],
+        description: productData['description'],
+        imageUrl: productData['imageUrl'],
+        isFavorite: productData['isFavorite'],
+      ));
+    });
+    notifyListeners();
+    return Future.value();
+  }
+
   Future<void> saveProduct(Map<String, Object> data) async {
     bool hasId = data['id'] != null;
 
@@ -50,15 +69,15 @@ class ProductList with ChangeNotifier {
         },
       ),
     );
-      final id = json.decode(response.body)['name'];
-      _items.add(Product(
-          id: id,
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          isFavorite: product.isFavorite));
-      notifyListeners();
+    final id = json.decode(response.body)['name'];
+    _items.add(Product(
+        id: id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        isFavorite: product.isFavorite));
+    notifyListeners();
   }
 
   Future<void> updateProduct(Product product) {

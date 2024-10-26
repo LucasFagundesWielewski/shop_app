@@ -3,6 +3,7 @@ import 'package:shop_app/components/app_drawer.dart';
 import 'package:shop_app/components/product_grid.dart';
 import 'package:shop_app/models/cart.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/models/product_list.dart';
 
 enum FilterOptions {
   Favorite,
@@ -18,6 +19,12 @@ class ProductsOverviewPage extends StatefulWidget {
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   bool _showFavoriteOnly = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(context, listen: false).loadProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/cart');
               },
-              icon: Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart),
             ),
             builder: (ctx, cart, child) => Badge(
               label: Text(cart.itemCount.toString()),
