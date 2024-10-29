@@ -6,7 +6,8 @@ import 'package:shop_app/data/dummy_data.dart';
 import 'package:http/http.dart' as http;
 
 class ProductList with ChangeNotifier {
-  final _baseUrl = 'https://shop-code-e6c83-default-rtdb.firebaseio.com';
+  final _baseUrl =
+      'https://shop-code-e6c83-default-rtdb.firebaseio.com/products';
   final List<Product> _items = dummyProducts;
   // bool _showFavoriteOnly = false;
 
@@ -21,7 +22,7 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final response = await http.get(Uri.parse('$_baseUrl/products.json'));
+    final response = await http.get(Uri.parse('$_baseUrl.json'));
     if (response.body == 'null') {
       return Future.value();
     }
@@ -62,7 +63,7 @@ class ProductList with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/products.json'),
+      Uri.parse('$_baseUrl.json'),
       body: json.encode(
         {
           'name': product.name,
@@ -84,9 +85,20 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((prod) => prod.id == product.id);
     if (index >= 0) {
+      await http.patch(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+        body: json.encode(
+          {
+            'name': product.name,
+            'price': product.price,
+            'description': product.description,
+            'imageUrl': product.imageUrl,
+          },
+        ),
+      );
       _items[index] = product;
       notifyListeners();
     }
