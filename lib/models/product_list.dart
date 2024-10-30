@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/data/dummy_data.dart';
 import 'package:http/http.dart' as http;
+import '../exceptions/http_exception.dart';
 
 class ProductList with ChangeNotifier {
   final _baseUrl =
@@ -102,14 +103,25 @@ class ProductList with ChangeNotifier {
       _items[index] = product;
       notifyListeners();
     }
-    return Future.value();
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     int index = _items.indexWhere((prod) => prod.id == id);
     if (index >= 0) {
-      _items.removeWhere((prod) => prod.id == id);
+      final product = _items[index];
+      _items.remove(product);
       notifyListeners();
+
+      final response = await http.delete(Uri.parse('$_baseUrl/$id.json'));
+
+      if (response.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException(
+          message: 'Ocorreu um erro na exclusão do produto.',
+          statusCode: response.statusCode,
+        );
+      }
     }
   }
 
