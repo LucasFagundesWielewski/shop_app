@@ -10,7 +10,6 @@ class ProductList with ChangeNotifier {
   final _baseUrl =
       'https://shop-code-e6c83-default-rtdb.firebaseio.com/products';
   final List<Product> _items = dummyProducts;
-  // bool _showFavoriteOnly = false;
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems {
@@ -124,21 +123,4 @@ class ProductList with ChangeNotifier {
       }
     }
   }
-
-  // List<Product> get items {
-  //   if (_showFavoriteOnly) {
-  //     return _items.where((prod) => prod.isFavorite).toList();
-  //   }
-  //   return [..._items];
-  // }
-
-  // void showFavoriteOnly() {
-  //   _showFavoriteOnly = true;
-  //   notifyListeners();
-  // }
-
-  // void showAll() {
-  //   _showFavoriteOnly = false;
-  //   notifyListeners();
-  // }
 }
