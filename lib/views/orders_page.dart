@@ -4,23 +4,8 @@ import 'package:shop_app/components/app_drawer.dart';
 import 'package:shop_app/components/order.dart';
 import 'package:shop_app/models/order_list.dart';
 
-class OrdersPage extends StatefulWidget {
+class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
-
-  @override
-  State<OrdersPage> createState() => _OrdersPageState();
-}
-
-class _OrdersPageState extends State<OrdersPage> {
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<OrderList>(context, listen: false).loadOrders().then((_) {
-      setState(() => _isLoading = false);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +15,23 @@ class _OrdersPageState extends State<OrdersPage> {
         title: const Text('Meus pedidos'),
       ),
       drawer: const AppDrawer(),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: orders.itemsCount,
-              itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
-            ),
+      body: FutureBuilder(
+        future: Provider.of<OrderList>(context, listen: false).loadOrders(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (snapshot.error != null) {
+              return const Center(child: Text('Ocorreu um erro!'));
+            } else {
+              return ListView.builder(
+                itemCount: orders.itemsCount,
+                itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 }
