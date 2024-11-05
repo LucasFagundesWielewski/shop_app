@@ -7,6 +7,10 @@ import 'package:shop_app/models/order_list.dart';
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
+  Future<void> _refreshOrders(BuildContext context) {
+    return Provider.of<OrderList>(context, listen: false).loadOrders();
+  }
+
   @override
   Widget build(BuildContext context) {
     final OrderList orders = Provider.of(context);
@@ -24,9 +28,12 @@ class OrdersPage extends StatelessWidget {
             if (snapshot.error != null) {
               return const Center(child: Text('Ocorreu um erro!'));
             } else {
-              return ListView.builder(
-                itemCount: orders.itemsCount,
-                itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
+              return RefreshIndicator(
+                onRefresh: () => _refreshOrders(context),
+                child: ListView.builder(
+                  itemCount: orders.itemsCount,
+                  itemBuilder: (ctx, i) => OrderWidget(order: orders.items[i]),
+                ),
               );
             }
           }
