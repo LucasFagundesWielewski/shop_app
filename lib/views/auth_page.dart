@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/components/auth_form.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -54,6 +55,7 @@ class AuthPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const AuthForm(),
               ],
             ),
           )
