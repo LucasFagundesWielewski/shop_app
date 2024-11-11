@@ -11,18 +11,45 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _passwordController = TextEditingController();
-  final AuthMode _authMode = AuthMode.Login;
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  AuthMode _authMode = AuthMode.Login;
   final Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
 
+  bool _isLogin() => _authMode == AuthMode.Login;
+  bool _isSignup() => _authMode == AuthMode.Signup;
+
+  void _switchAuthMode() {
+    setState(() {
+      if (_isLogin()) {
+        _authMode = AuthMode.Signup;
+      } else {
+        _authMode = AuthMode.Login;
+      }
+    });
+  }
+
   void _submit() {
-    if (_authMode == AuthMode.Login) {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    _formKey.currentState?.save();
+
+    if (_isLogin()) {
       // Login
     } else {
       // Signup
     }
+
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -35,17 +62,19 @@ class _AuthFormState extends State<AuthForm> {
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
-        height: 320,
+        height: _isLogin() ? 310 : 400,
         width: deviceSize.width * 0.75,
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
                 decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _authData['email'] = email ?? '',
-                validator: (email) {
-                  final email = email ?? '';
+                // ignore: no_leading_underscores_for_local_identifiers
+                validator: (_email) {
+                  final email = _email ?? '';
                   if (email.trim().isEmpty || !email.contains('@')) {
                     return 'Informe um e-mail válido';
                   }
@@ -67,13 +96,13 @@ class _AuthFormState extends State<AuthForm> {
                   return null;
                 },
               ),
-              if (_authMode == AuthMode.Signup)
+              if (_isSignup())
                 TextFormField(
                   decoration:
                       const InputDecoration(labelText: 'Confirmar Senha'),
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
-                  validator: _authMode == AuthMode.Login
+                  validator: _isLogin()
                       ? null
                       // ignore: no_leading_underscores_for_local_identifiers
                       : (_password) {
@@ -85,21 +114,31 @@ class _AuthFormState extends State<AuthForm> {
                         },
                 ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 8,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 8,
+                  child: Text(
+                    _authMode == AuthMode.Login ? 'ENTRAR' : 'REGISTRAR',
                   ),
                 ),
+              const Spacer(),
+              TextButton(
+                onPressed: _switchAuthMode,
                 child: Text(
-                  _authMode == AuthMode.Login ? 'ENTRAR' : 'REGISTRAR',
+                  _isLogin() ? 'REGISTRAR-SE' : 'JÁ POSSUI UMA CONTA? ENTRAR',
                 ),
-              ),
+              )
             ],
           ),
         ),
