@@ -48,6 +48,7 @@ class _AuthFormState extends State<AuthForm> {
 
     if (_isLogin()) {
       // Login
+      await auth.login(_authData['email'] ?? '', _authData['password'] ?? '');
     } else {
       // Signup
       await auth.signup(_authData['email'] ?? '', _authData['password'] ?? '');
