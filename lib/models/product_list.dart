@@ -2,18 +2,19 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/product.dart';
-import 'package:shop_app/data/dummy_data.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/utils/constants.dart';
 import '../exceptions/http_exception.dart';
 
 class ProductList with ChangeNotifier {
-  final List<Product> _items = dummyProducts;
+  final String _token;
+  final List<Product> _items;
 
   List<Product> get items => [..._items];
-  List<Product> get favoriteItems {
-    return _items.where((prod) => prod.isFavorite).toList();
-  }
+  List<Product> get favoriteItems =>
+      _items.where((prod) => prod.isFavorite).toList();
+
+  ProductList(this._token, [List<Product>? items]) : _items = items ?? [];
 
   int get itemsCount {
     return _items.length;
@@ -21,8 +22,8 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     _items.clear();
-    final response =
-        await http.get(Uri.parse('${Constants.PRODUCT_BASE_URL}.json'));
+    final response = await http
+        .get(Uri.parse('${Constants.PRODUCT_BASE_URL}.json?auth=$_token'));
     if (response.body == 'null') {
       return Future.value();
     }
