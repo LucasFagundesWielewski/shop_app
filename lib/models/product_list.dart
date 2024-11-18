@@ -8,13 +8,19 @@ import '../exceptions/http_exception.dart';
 
 class ProductList with ChangeNotifier {
   final String _token;
+  final String _userId;
+  // ignore: prefer_final_fields
   final List<Product> _items;
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
-  ProductList(this._token, [List<Product>? items]) : _items = items ?? [];
+  ProductList([
+    this._token = '',
+    this._userId = '',
+    this._items = const [],
+  ]);
 
   int get itemsCount {
     return _items.length;
@@ -28,17 +34,28 @@ class ProductList with ChangeNotifier {
     if (response.body == 'null') {
       return Future.value();
     }
+
+    final favResponse = await http.get(
+      Uri.parse(
+        '${Constants.USER_FAVORITES_URL}/$_userId.json?auth=$_token',
+      ),
+    );
+
+    Map<String, dynamic> favData =
+        favResponse.body == 'null' ? {} : json.decode(favResponse.body);
+
     Map<String, dynamic> data = json.decode(response.body);
 
     _items.clear();
     data.forEach((productId, productData) {
+      final isFavorite = favData[productId] ?? false;
       _items.add(Product(
         id: productId,
         name: productData['name'],
         price: productData['price'],
         description: productData['description'],
         imageUrl: productData['imageUrl'],
-        isFavorite: productData['isFavorite'],
+        isFavorite: isFavorite,
       ));
     });
     notifyListeners();
@@ -74,18 +91,19 @@ class ProductList with ChangeNotifier {
           'price': product.price,
           'description': product.description,
           'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
         },
       ),
     );
     final id = json.decode(response.body)['name'];
-    _items.add(Product(
+    _items.add(
+      Product(
         id: id,
         name: product.name,
         description: product.description,
         price: product.price,
         imageUrl: product.imageUrl,
-        isFavorite: product.isFavorite));
+      ),
+    );
     notifyListeners();
   }
 

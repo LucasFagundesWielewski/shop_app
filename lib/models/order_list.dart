@@ -11,7 +11,7 @@ class OrderList with ChangeNotifier {
   // ignore: prefer_final_fields
   List<Order> _items = [];
 
-  OrderList(this._token, this._items);
+  OrderList([this._token = '', this._items = const []]);
 
   List<Order> get items {
     return [..._items];

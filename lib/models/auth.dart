@@ -4,7 +4,7 @@ import 'dart:convert';
 
 class Auth with ChangeNotifier {
   String? _token;
-  String? _uid;
+  String? _userId;
   String? _email;
   DateTime? _expiryDate;
 
@@ -20,9 +20,9 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  String? get uid {
+  String? get userId {
     if (isAuth) {
-      return _uid;
+      return _userId;
     }
     return null;
   }
@@ -52,7 +52,7 @@ class Auth with ChangeNotifier {
       throw Exception(responseBody['error']['message']);
     } else {
       _token = responseBody['idToken'];
-      _uid = responseBody['localId'];
+      _userId = responseBody['localId'];
       _email = responseBody['email'];
       _expiryDate = DateTime.now().add(
         Duration(
