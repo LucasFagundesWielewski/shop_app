@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
           create: (_) => OrderList(),
           update: (ctx, auth, previousOrders) => OrderList(
             auth.token ?? '',
+            auth.userId ?? '',
             previousOrders?.items ?? [],
           ),
         ),
