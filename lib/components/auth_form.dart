@@ -24,10 +24,11 @@ class _AuthFormState extends State<AuthForm>
   };
 
   AnimationController? _controller;
-  Animation<Size>? heightAnimation;
+  Animation<double>? _opacityAnimation;
+  Animation<Offset>? _slideAnimation;
 
   bool isLogin() => authMode == AuthMode.Login;
-  bool isSignup() => authMode == AuthMode.Signup;
+  //bool isSignup() => authMode == AuthMode.Signup;
 
   @override
   void initState() {
@@ -36,9 +37,18 @@ class _AuthFormState extends State<AuthForm>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    heightAnimation = Tween<Size>(
-      begin: const Size(double.infinity, 310),
-      end: const Size(double.infinity, 400),
+    _opacityAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.linear,
+      ),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
     ).animate(
       CurvedAnimation(
         parent: _controller!,
@@ -161,23 +171,36 @@ class _AuthFormState extends State<AuthForm>
                   return null;
                 },
               ),
-              if (isSignup())
-                TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'Confirmar Senha'),
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: true,
-                  validator: isLogin()
-                      ? null
-                      // ignore: no_leading_underscores_for_local_identifiers
-                      : (_password) {
-                          final password = _password ?? '';
-                          if (password != passwordController.text) {
-                            return 'Senhas não conferem';
-                          }
-                          return null;
-                        },
+              AnimatedContainer(
+                constraints: BoxConstraints(
+                  minHeight: isLogin() ? 0 : 60,
+                  maxHeight: isLogin() ? 0 : 120,
                 ),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.linear,
+                child: FadeTransition(
+                  opacity: _opacityAnimation!,
+                  child: SlideTransition(
+                    position: _slideAnimation!,
+                    child: TextFormField(
+                      decoration:
+                          const InputDecoration(labelText: 'Confirmar Senha'),
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      validator: isLogin()
+                          ? null
+                          // ignore: no_leading_underscores_for_local_identifiers
+                          : (_password) {
+                              final password = _password ?? '';
+                              if (password != passwordController.text) {
+                                return 'Senhas não conferem';
+                              }
+                              return null;
+                            },
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               if (isLoading)
                 const CircularProgressIndicator()
