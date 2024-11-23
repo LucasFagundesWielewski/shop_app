@@ -21,43 +21,47 @@ class AuthPage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 70,
-                  ),
-                  transform: Matrix4.rotationZ(-8 * 3.1415926535 / 180)
-                    ..translate(-10.0),
-                  decoration: BoxDecoration(
-                    color: Colors.deepOrange.shade900,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                        offset: Offset(0, 2),
+          Center(
+            child: SingleChildScrollView(
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 70,
                       ),
-                    ],
-                  ),
-                  child: const Text(
-                    'Minha Loja',
-                    style: TextStyle(
-                      fontSize: 45,
-                      fontFamily: 'Anton',
-                      color: Colors.white,
+                      transform: Matrix4.rotationZ(-8 * 3.1415926535 / 180)
+                        ..translate(-10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.deepOrange.shade900,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        'Minha Loja',
+                        style: TextStyle(
+                          fontSize: 45,
+                          fontFamily: 'Anton',
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
+                    const AuthForm(),
+                  ],
                 ),
-                const AuthForm(),
-              ],
+              ),
             ),
           )
         ],
