@@ -9,41 +9,47 @@ class ProductDetailPage extends StatelessWidget {
     final Product product =
         ModalRoute.of(context)!.settings.arguments as Product;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Hero(
-              tag: product.id,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 300,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(product.name),
+              background: Hero(
+                tag: product.id,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              'R\$${product.price}',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              child: Text(
-                product.description,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              const SizedBox(height: 10),
+              Text(
+                'R\$${product.price}',
                 textAlign: TextAlign.center,
-                softWrap: true,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 20,
+                ),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                width: double.infinity,
+                child: Text(
+                  product.description,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+              ),
+            ]),
+          ),
+        ],
       ),
     );
   }
